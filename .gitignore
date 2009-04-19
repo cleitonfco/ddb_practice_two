@@ -1,0 +1,3 @@
+app_client/README
+app_client/log/*.log
+app_client/config/database.yml
