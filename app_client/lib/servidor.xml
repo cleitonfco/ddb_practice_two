@@ -1,0 +1,34 @@
+<servidor>
+  <empregado>
+    <registro>1</registro>
+    <nome>Maria Aparecida de Sousa</nome>
+    <cpf>673.355.193-49</cpf>
+    <vencimento>951.00</vencimento>
+    <logradouro>Rua Piripiri, 701</logradouro>
+    <bairro>Ladeira Nova</bairro>
+    <cep>64055-120</cep>
+    <cidade>Rio de Janeiro</cidade>
+    <estado>RJ</estado>
+    <fone>5565-7979</fone>
+    <tipo_fone>R</tipo_fone>
+    <nascimento>15/04/1989</nascimento>
+    <sexo>Feminino</sexo>
+  </empregado>
+
+  <empregado>
+    <registro>2</registro>
+    <nome>Roberto Marinho</nome>
+    <cpf>973.135.793-18</cpf>
+    <vencimento>1700.85</vencimento>
+    <logradouro>Rua Piripiri, 701</logradouro>
+    <bairro>Ladeira Nova</bairro>
+    <cep>64055-120</cep>
+    <cidade>Rio de Janeiro</cidade>
+    <estado>RJ</estado>
+    <fone>9965-7979</fone>
+    <tipo_fone>C</tipo_fone>
+    <nascimento>15/04/1989</nascimento>
+    <sexo>Masculino</sexo>
+  </empregado>
+</servidor>
+
