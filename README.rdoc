@@ -1,0 +1,49 @@
+=== ESPECIALIZAÇÃO EM BANCO DE DADOS
+=== DISCIPLINA: BANCO DE DADOS DISTRIBUÍDOS
+
+= Atividade Prática 02
+
+== 1. Desenvolva uma interface web de consulta para as fontes de dados abaixo, que utilize a abordagem virtual para integração de esquemas, com a implementação de mediadores e adaptadores.
+
+SGBD: MySQL                         SGBD: PostgreSQL                      ARQUIVO: servidor.xml
+BD: empresa                         BD: empresa
+Tabela: empregado                   Tabela: funcionario
+ Campo Tipo Tamanho                    Campo       Tipo    Tamanho          Campo
+matricula N-I                       identificacao N-I                     Registro
+nome          T        40           nome             T         40         Nome
+CPF          N-I                    CPF              T         11         CPF
+salario     N-R     (em R$)         remuneracao N-R        (em US$)       Vencimento
+endereco      T        60           logradouro       T         30         Logradouro
+cidade        T        20           numero          N-I                   Bairro
+estado        T        02           bairro           T         20         CEP
+fone-res      T        10           CEP             N-I                   Cidade
+fone-cel      T        10           cidade           T         30         Estado
+dia-nasc     N-I       02           estado           T         02         Fone
+mes-nasc N-I           02           telefone         T         10         Tipo-Fone
+ano-nasc     N-I       04           data-nasc        D                    Nascimento
+sexo          T        01           sexo            N-I                   Sexo
+Tipos de Campos:
+D = data; N-I = numérico inteiro; N-R = numérico real (com casa decimal); T = texto
+Exemplos de consulta:
+    1. Relação dos empregados da empresa com os campos matrícula, nome e salário.
+    2. Relação dos empregados que ganham mais de R$ 5.000,00.
+    3. Relação dos empregados que moram no CEP 64055-120.
+    4. Relação dos empregados que tem telefone celular.
+Observações:
+    1. Os campos matricula, identificacao e registro têm o mesmo significado.
+    2. Os campos salario, remuneracao e vencimento têm o mesmo significado.
+    3. Na tabela funcionario, o conteúdo do campo CPF tem formato 99999999999 (ex.: 67335519349).
+    4. No arquivo servidor.xml, o conteúdo do campo CPF tem formato 999.999.999-99 (ex.:
+        673.355.193-49).
+    5. Na tabela empregado, o conteúdo do campo endereco consiste no endereço completo, com
+        logradouro, número, bairro e CEP (formato: 99999-999).
+    6. No arquivo servidor.xml, o conteúdo do campo logradouro consiste no logradouro e número.
+    7. Na tabela funcionario, o campo CEP está no formato 99999999 (ex.: 64055120).
+    8. Na arquivo servidor.xml, o campo CEP está no formato 99999-999 (ex.: 64055-120).
+    9. Nos campos que contém números de telefone, o formato é 9999999999 (ex.: 8632155222).
+    10. No arquivo servidor.xml, o campo tipo-fone consiste no tipo de telefone (R=residencial;
+        C=celular).
+    11. Na tabela empregado, o domínio do campo sexo é (“M”, “F”).
+    12. Na tabela funcionario, o domínio do campo sexo é (1, 2), sendo 1=Masculino e 2=Feminino.
+    13. No arquivo servidor.xml, o domínio do campo sexo é (“Masculino”, “Feminino”).
+
