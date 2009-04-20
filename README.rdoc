@@ -96,19 +96,19 @@ Para começar a aplicação é necessário configurar os bancos de dados. No arq
 
 Agora é hora de criar os bancos e popular as bases.
 
-* MySql
+<b>MySql</b>
 
   rake db:create:mysql
   rake db:migrate:mysql
   rake db:populate:empregados
 
-* Postgres
+<b>Postgres</b>
 
   rake db:create:postgres
   rake db:migrate:postgres
   rake db:populate:funcionarios
 
-* XML
+<b>XML</b>
 
   rake db:populate:servidores
 
