@@ -78,11 +78,11 @@
 
 === Autores
 
-*Cleiton Francisco*
+<b>Cleiton Francisco</b>
 * http://www.cleitonfco.com.br
 * http://twitter.com/cleitonfco
 
-*Charleno Pires*
+<b>Charleno Pires</b>
 * http://www.charlenopires.com.br
 * http://twitter.com/charlenopires
 
