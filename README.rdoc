@@ -76,6 +76,42 @@
 12. Na tabela funcionario, o domínio do campo sexo é (1, 2), sendo 1=Masculino e 2=Feminino.
 13. No arquivo servidor.xml, o domínio do campo sexo é (“Masculino”, “Feminino”).
 
+== Como Usar?
+
+Faça uma cópia do código que está no repositório:
+
+  git clone git://github.com/cleitonfco/ddb_practice_two.git
+
+Entre no diretório e crie uma aplicação rails chamada 'app_client'
+
+  cd ddb_practice_two
+  rails app_client
+
+Como já existem alguns arquivos do rails, é provável que apareça alguma mensagem pedindo que confirme a sobrescrita de arquivos. Pode dizer sim, neste caso.
+
+Para começar a aplicação é necessário configurar os bancos de dados. No arquivo database-sample.yml tem um exemplo. Faça as alterações e salve o arquivo como database.yml
+
+  cd app_client
+  mv config/database-sample.yml config/database.yml
+
+Agora é hora de criar os bancos e popular as bases.
+
+* MySql
+
+  rake db:create:mysql
+  rake db:migrate:mysql
+  rake db:populate:empregados
+
+* Postgres
+
+  rake db:create:postgres
+  rake db:migrate:postgres
+  rake db:populate:funcionarios
+
+* XML
+
+  rake db:populate:servidores
+
 === Autores
 
 <b>Cleiton Francisco</b>
