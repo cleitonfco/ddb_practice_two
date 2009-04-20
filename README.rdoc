@@ -21,7 +21,7 @@
     ano_nasc   Int
     sexo       Text  1
 
-=== SGBD: PostgreSQL                      
+=== SGBD: PostgreSQL
   BD: empresa
   Tabela: funcionario
   Campos:
@@ -78,17 +78,11 @@
 
 === Autores
 
-<b>Cleiton Francisco</b>
-
-http://cleitonfco.com.br
-
+<b>Cleiton Francisco</b><br>
+http://www.cleitonfco.com.br<br>
 http://twitter.com/cleitonfco
 
-
-<b>Charleno Pires</b>
-
-http://charlenopires.com.br
-
+<b>Charleno Pires</b><br>
+http://www.charlenopires.com.br<br>
 http://twitter.com/charlenopires
-
 
