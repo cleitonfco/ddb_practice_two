@@ -1,5 +1,4 @@
 ActionController::Routing::Routes.draw do |map|
-  map.resources :empresas
   map.resources :empregados
   # The priority is based upon order of creation: first created -> highest priority.
 
