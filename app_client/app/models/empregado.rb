@@ -63,74 +63,67 @@ class Empregado < ActiveRecord::Base
       conditions.merge!({ :ano_nasc => nascimento.year, :mes_nasc => nascimento.month, :dia_nasc => nascimento.day }) if nascimento.is_a? Date
       conditions = conditions.delete_if { |k, v| k == :nascimento }
     end
-    conditions
+    #conditions
   end
 
-  def self.replace_fields_hash(statement, bind_vars) #:nodoc:
+  def self.replace_fields(statement, bind_vars)
     mapping = {"id" => "matricula", "logradouro" => "endereco", "fone" => "fone_cel", "numero" => "", "bairro" => "", "celular" => "fone_cel"}
-    statement.gsub!(/[^:](id|logradouro|fone|celular)\b/) do
-      case $1
+    statement.gsub!(/\b(id|logradouro|fone|celular)\b/) do
+      case $1.strip
         when "id"; "matricula"
         when "logradouro"; "endereco"
         when "fone"; "fone_res"
         when "celular"; "fone_cel"
       end
     end
-    statement.gsub!(/numero([^:]*):(\w+)\s*,?/, "")
-    statement.gsub!(/bairro([^:]*):(\w+)\s*,?/, "")
-    statement.gsub!(/cep\s*=\s*:(\w+)/, "endereco like '%:\\1%'")
-    statement.gsub!(/nascimento([^:]*):(\w+)/) do
-      if bind_vars.include?(match = $2.to_sym)
-        if bind_vars[match].is_a? Date
-          nascimento = bind_vars[match]
-        elsif bind_vars[match].is_a? String
-          begin; nascimento = bind_vars[match].to_date
-          rescue; nascimento = nil
-          end
-        end
-        bind_vars.merge!({ :ano_nasc => nascimento.year, :mes_nasc => nascimento.month, :dia_nasc => nascimento.day }) if nascimento.is_a? Date
-        bind_vars = bind_vars.delete_if { |k, v| k == match }
-        if nascimento.is_a?(Date)
-          case $1.strip
-            when "<="
-              "(ano_nasc < :ano_nasc) OR (ano_nasc <= :ano_nasc AND mes_nasc < :mes_nasc) OR (ano_nasc <= :ano_nasc AND mes_nasc <= :mes_nasc AND dia_nasc <= :dia_nasc)"
-            when "<"
-              "(ano_nasc < :ano_nasc) OR (ano_nasc < :ano_nasc AND mes_nasc < :mes_nasc) OR (ano_nasc < :ano_nasc AND mes_nasc < :mes_nasc AND dia_nasc < :dia_nasc)"
-            when ">="
-              "(ano_nasc > :ano_nasc) OR (ano_nasc >= :ano_nasc AND mes_nasc > :mes_nasc) OR (ano_nasc >= :ano_nasc AND mes_nasc >= :mes_nasc AND dia_nasc >= :dia_nasc)"
-            when ">"
-              "(ano_nasc > :ano_nasc) OR (ano_nasc > :ano_nasc AND mes_nasc > :mes_nasc) OR (ano_nasc > :ano_nasc AND mes_nasc > :mes_nasc AND dia_nasc > :dia_nasc)"
-            when "="
-              "(ano_nasc = :ano_nasc AND mes_nasc = :mes_nasc AND dia_nasc = :dia_nasc)"
-            when "<>"
-              "(ano_nasc <> :ano_nasc OR mes_nasc <> :mes_nasc OR dia_nasc <> :dia_nasc)"
-          end
-        else
-          ""
-        end
-      end
-    end
+    statement.gsub!(/numero[^?]*\?/, "endereco like '%?%'")
+    statement.gsub!(/bairro[^?]*\?/, "endereco like '%?%'")
+    statement.gsub!(/cep[^?]*\?/, "endereco like '%?%'")
+#    statement.gsub!(/nascimento([^:]*)\?/) do
+#      if bind_vars.include?(match = $2.to_sym)
+#        if bind_vars[match].is_a? Date
+#          nascimento = bind_vars[match]
+#        elsif bind_vars[match].is_a? String
+#          begin; nascimento = bind_vars[match].to_date
+#          rescue; nascimento = nil
+#          end
+#        end
+#        bind_vars.merge!({ :ano_nasc => nascimento.year, :mes_nasc => nascimento.month, :dia_nasc => nascimento.day }) if nascimento.is_a? Date
+#        bind_vars = bind_vars.delete_if { |k, v| k == match }
+#        if nascimento.is_a?(Date)
+#          case $1.strip
+#            when "<="
+#              "(ano_nasc < :ano_nasc) OR (ano_nasc <= :ano_nasc AND mes_nasc < :mes_nasc) OR (ano_nasc <= :ano_nasc AND mes_nasc <= :mes_nasc AND dia_nasc <= :dia_nasc)"
+#            when "<"
+#              "(ano_nasc < :ano_nasc) OR (ano_nasc < :ano_nasc AND mes_nasc < :mes_nasc) OR (ano_nasc < :ano_nasc AND mes_nasc < :mes_nasc AND dia_nasc < :dia_nasc)"
+#            when ">="
+#              "(ano_nasc > :ano_nasc) OR (ano_nasc >= :ano_nasc AND mes_nasc > :mes_nasc) OR (ano_nasc >= :ano_nasc AND mes_nasc >= :mes_nasc AND dia_nasc >= :dia_nasc)"
+#            when ">"
+#              "(ano_nasc > :ano_nasc) OR (ano_nasc > :ano_nasc AND mes_nasc > :mes_nasc) OR (ano_nasc > :ano_nasc AND mes_nasc > :mes_nasc AND dia_nasc > :dia_nasc)"
+#            when "="
+#              "(ano_nasc = :ano_nasc AND mes_nasc = :mes_nasc AND dia_nasc = :dia_nasc)"
+#            when "<>"
+#              "(ano_nasc <> :ano_nasc OR mes_nasc <> :mes_nasc OR dia_nasc <> :dia_nasc)"
+#          end
+#        else
+#          ""
+#        end
+#      end
+#    end
   end
 
   def self.conditions_array(any)
     return nil if any.blank?
-
     statement, *values = any
-    if values.first.is_a?(Hash) and statement =~ /:\w+/
-      replace_fields_hash(statement, values.first)
-#    elsif statement.include?('?')
-#      replace_bind_variables(statement, values)
-#    else
-#      statement % values.collect { |value| connection.quote_string(value.to_s) }
-    end
+    replace_fields(statement, values)
   end
 
   def self.find(*args)
     options = args.extract_options!
-    select_mapping = {"id" => "matricula", "logradouro" => "endereco", "cep" => "endereco", "fone" => "fone_res", "numero" => "", 
+    mapping = {"id" => "matricula", "logradouro" => "endereco", "cep" => "endereco", "fone" => "fone_res", "numero" => "", 
       "bairro" => "", "celular" => "fone_cel", "nascimento" => "dia_nasc, mes_nasc, ano_nasc"}
     if options[:select]
-      select_mapping.each_pair { |key, value| map_select(options[:select], key, value) }
+      mapping.each_pair { |key, value| map_select(options[:select], key, value) }
     end
     case options[:conditions]
       when Hash; conditions_hash(options[:conditions])
