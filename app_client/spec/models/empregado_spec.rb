@@ -44,24 +44,27 @@ describe Empregado do
     statement.should == "endereco like '%?%' and salario < ?"
   end
 
-#  it "mapeia NASCIMENTO para DIA_NASC, MES_NASC, ANO_NASC" do
-#    statement = "nascimento = ?"
-#    values = Date.today - ((rand * 30).ceil.day)
-#    nasc = values.dup
-#    emp = Empregado.replace_fields(statement, values)
-#    statement.should == "ano_nasc = ? AND mes_nasc = ? AND dia_nasc = ?"
-#    values.should == [nasc.year, nasc.month, nasc.day]
-#  end
-
-  it "mapeia NASCIMENTO para DIA_NASC, MES_NASC, ANO_NASC #2" do
-    statement = "nascimento = ?"
-    values = Date.today - ((rand * 30).ceil.day)
-    nasc = values.dup
-    emp = Empregado.replace_fields(statement, values)
-    statement.should == "ano_nasc = ? AND mes_nasc = ? AND dia_nasc = ?"
-    values.should == [nasc.year, nasc.month, nasc.day]
+  it "mapeia NASCIMENTO para DIA_NASC, MES_NASC, ANO_NASC" do
+    conditions = ["nascimento = ?", (Date.today - ((rand * 30).ceil.day))]
+    nasc = conditions.second
+    cond = Empregado.conditions_array(conditions)
+    cond.should == ["ano_nasc = ? AND mes_nasc = ? AND dia_nasc = ?", nasc.year, nasc.month, nasc.day]
   end
 
+  it "NÃO deve mapear NASCIMENTO para DIA_NASC, MES_NASC, ANO_NASC quando houver outros dados" do
+    conditions = ["nascimento = ? AND sexo = ?", (Date.today - ((rand * 30).ceil.day)), "F"]
+    nasc = conditions.second
+    cond = Empregado.conditions_array(conditions)
+    cond.should be_nil
+  end
+
+#  it "mapeia NASCIMENTO para DIA_NASC, MES_NASC, ANO_NASC #2" do
+#    conditions = ["nascimento = ?", (Date.today - ((rand * 30).ceil.day))]
+#    nasc = conditions.second
+#    v = Empregado.replace_fields(conditions.first, conditions.second)
+#    #statement.should == "ano_nasc = ? AND mes_nasc = ? AND dia_nasc = ?"
+#    v.should == [nasc.year, nasc.month, nasc.day]
+#  end
 
 #  it "substitui os valores de nasc pelos de DIA_NASC, MES_NASC, ANO_NASC" do
 #    statement = "nasc = ? and sexo = ?"
@@ -72,3 +75,4 @@ describe Empregado do
 
 
 end
+

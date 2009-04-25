@@ -84,75 +84,50 @@ class Empregado < ActiveRecord::Base
       if values.empty? && nascimento.is_a?(Date)
         values.push(nascimento.year, nascimento.month, nascimento.day)
       end
-      puts values.inspect
       statement.sub!(match, "ano_nasc = ? AND mes_nasc = ? AND dia_nasc = ?")
     end
-
-#    statement.gsub!(/nascimento\s*=\s*\?/) do
-#      nascimento = values.shift
-#      if values.empty? && nascimento.is_a?(Date)
-#        values = values.push(nascimento.year, nascimento.month, nascimento.day)
-#      end
-#      "ano_nasc = ? AND mes_nasc = ? AND dia_nasc = ?"
-#    end
-#    puts values.inspect
+    values
   end
-
-#  def self.replace_values(statement, bind_vars)
-#    if statement =~ /nascimento\s*=\s*\?/
-#    "ano_nasc = ? AND mes_nasc = ? AND dia_nasc = ?"
-#    end
-#  end
-
-    # do
-#      if bind_vars.include?(match = $2.to_sym)
-#        if bind_vars[match].is_a? Date
-#          nascimento = bind_vars[match]
-#        elsif bind_vars[match].is_a? String
-#          begin; nascimento = bind_vars[match].to_date
-#          rescue; nascimento = nil
-#          end
-#        end
-#        bind_vars.merge!({ :ano_nasc => nascimento.year, :mes_nasc => nascimento.month, :dia_nasc => nascimento.day }) if nascimento.is_a? Date
-#        bind_vars = bind_vars.delete_if { |k, v| k == match }
-#        if nascimento.is_a?(Date)
-#          case $1.strip
-#            when "<="
-#              "(ano_nasc < :ano_nasc) OR (ano_nasc <= :ano_nasc AND mes_nasc < :mes_nasc) OR (ano_nasc <= :ano_nasc AND mes_nasc <= :mes_nasc AND dia_nasc <= :dia_nasc)"
-#            when "<"
-#              "(ano_nasc < :ano_nasc) OR (ano_nasc < :ano_nasc AND mes_nasc < :mes_nasc) OR (ano_nasc < :ano_nasc AND mes_nasc < :mes_nasc AND dia_nasc < :dia_nasc)"
-#            when ">="
-#              "(ano_nasc > :ano_nasc) OR (ano_nasc >= :ano_nasc AND mes_nasc > :mes_nasc) OR (ano_nasc >= :ano_nasc AND mes_nasc >= :mes_nasc AND dia_nasc >= :dia_nasc)"
-#            when ">"
-#              "(ano_nasc > :ano_nasc) OR (ano_nasc > :ano_nasc AND mes_nasc > :mes_nasc) OR (ano_nasc > :ano_nasc AND mes_nasc > :mes_nasc AND dia_nasc > :dia_nasc)"
-#            when "="
-#              "(ano_nasc = :ano_nasc AND mes_nasc = :mes_nasc AND dia_nasc = :dia_nasc)"
-#            when "<>"
-#              "(ano_nasc <> :ano_nasc OR mes_nasc <> :mes_nasc OR dia_nasc <> :dia_nasc)"
-#          end
-#        else
-#          ""
-#        end
-#      end
-#    end
-#  end
 
   def self.conditions_array(any)
     return nil if any.blank?
-    statement, *values = any
-    replace_fields(statement, values)
+    any.first.gsub!(/\b(id|logradouro|fone|celular)\b/) do
+      case $1.strip
+        when "id"; "matricula"
+        when "logradouro"; "endereco"
+        when "fone"; "fone_res"
+        when "celular"; "fone_cel"
+      end
+    end
+    any.first.gsub!(/numero[^?]*\?/, "endereco like '%?%'")
+    any.first.gsub!(/bairro[^?]*\?/, "endereco like '%?%'")
+    any.first.gsub!(/cep[^?]*\?/, "endereco like '%?%'")
+
+    copy = any.dup
+    whatever = copy.shift
+
+    match = /nascimento\s*=\s*\?/
+    if any.first =~ match
+      amd = "ano_nasc = ? AND mes_nasc = ? AND dia_nasc = ?"
+      if copy.size == 1
+        nascimento = any.second
+        if nascimento.is_a?(Date)
+          any = amd, nascimento.year, nascimento.month, nascimento.day
+        end
+      end
+    end
   end
 
   def self.find(*args)
     options = args.extract_options!
-    mapping = {"id" => "matricula", "logradouro" => "endereco", "cep" => "endereco", "fone" => "fone_res", "numero" => "", 
+    mapping = {"id" => "matricula", "logradouro" => "endereco", "cep" => "endereco", "fone" => "fone_res", "numero" => "",
       "bairro" => "", "celular" => "fone_cel", "nascimento" => "dia_nasc, mes_nasc, ano_nasc"}
     if options[:select]
       mapping.each_pair { |key, value| map_select(options[:select], key, value) }
     end
     case options[:conditions]
       when Hash; conditions_hash(options[:conditions])
-      when Array; conditions_array(options[:conditions])
+      when Array; options[:conditions] = conditions_array(options[:conditions])
       #else
     end
     super(args.first, options)
@@ -182,7 +157,7 @@ end
 #    end
 #    result
 #  end
-  
+
 #  def map_conditions(condition)
 #    return nil if condition.blank?
 
@@ -210,7 +185,7 @@ end
 #  end
 
 #  def ano_nasc
-#    
+#
 #  end
 
 #  def map_string_for_conditions(condition)
@@ -230,5 +205,4 @@ end
 #          end
 #        end
 #end
-
 
