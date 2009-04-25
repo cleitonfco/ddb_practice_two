@@ -66,8 +66,7 @@ class Empregado < ActiveRecord::Base
     #conditions
   end
 
-  def self.replace_fields(statement, bind_vars)
-    mapping = {"id" => "matricula", "logradouro" => "endereco", "fone" => "fone_cel", "numero" => "", "bairro" => "", "celular" => "fone_cel"}
+  def self.replace_fields(statement, *values)
     statement.gsub!(/\b(id|logradouro|fone|celular)\b/) do
       case $1.strip
         when "id"; "matricula"
@@ -79,7 +78,33 @@ class Empregado < ActiveRecord::Base
     statement.gsub!(/numero[^?]*\?/, "endereco like '%?%'")
     statement.gsub!(/bairro[^?]*\?/, "endereco like '%?%'")
     statement.gsub!(/cep[^?]*\?/, "endereco like '%?%'")
-#    statement.gsub!(/nascimento([^:]*)\?/) do
+    match = /nascimento\s*=\s*\?/
+    if statement =~ match
+      nascimento = values.shift
+      if values.empty? && nascimento.is_a?(Date)
+        values.push(nascimento.year, nascimento.month, nascimento.day)
+      end
+      puts values.inspect
+      statement.sub!(match, "ano_nasc = ? AND mes_nasc = ? AND dia_nasc = ?")
+    end
+
+#    statement.gsub!(/nascimento\s*=\s*\?/) do
+#      nascimento = values.shift
+#      if values.empty? && nascimento.is_a?(Date)
+#        values = values.push(nascimento.year, nascimento.month, nascimento.day)
+#      end
+#      "ano_nasc = ? AND mes_nasc = ? AND dia_nasc = ?"
+#    end
+#    puts values.inspect
+  end
+
+#  def self.replace_values(statement, bind_vars)
+#    if statement =~ /nascimento\s*=\s*\?/
+#    "ano_nasc = ? AND mes_nasc = ? AND dia_nasc = ?"
+#    end
+#  end
+
+    # do
 #      if bind_vars.include?(match = $2.to_sym)
 #        if bind_vars[match].is_a? Date
 #          nascimento = bind_vars[match]
@@ -110,7 +135,7 @@ class Empregado < ActiveRecord::Base
 #        end
 #      end
 #    end
-  end
+#  end
 
   def self.conditions_array(any)
     return nil if any.blank?

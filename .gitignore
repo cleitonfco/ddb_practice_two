@@ -3,3 +3,4 @@ app_client/log/*.log
 app_client/config/database.yml
 app_client/config/initializers/session_store.rb
 *~
+db/schema.rb

@@ -1,0 +1,37 @@
+--create  app/views/testes
+--create  spec/views/testes
+
+--create  app/views/layouts/testes.html.erb
+--create  app/controllers/testes_controller.rb
+--create  app/helpers/testes_helper.rb
+create  app/views/testes/index.html.erb
+create  app/views/testes/show.html.erb
+create  app/views/testes/new.html.erb
+create  app/views/testes/edit.html.erb
+--create  app/models/teste.rb
+create  public/stylesheets/scaffold.css
+
+create  spec/routing/testes_routing_spec.rb
+create  spec/controllers/testes_controller_spec.rb
+create  spec/helpers/testes_helper_spec.rb
+create  spec/fixtures/testes.yml
+create  spec/models/teste_spec.rb
+create  spec/views/testes/edit.html.erb_spec.rb
+create  spec/views/testes/index.html.erb_spec.rb
+create  spec/views/testes/new.html.erb_spec.rb
+create  spec/views/testes/show.html.erb_spec.rb
+
+-- route  map.resources :testes
+
+---------------------------------------------------------
+
+create  app/views/empregados
+create  spec/views/empregados
+
+create  app/views/layouts/empregados.html.erb
+create  app/controllers/empregados_controller.rb
+create  app/helpers/empregados_helper.rb
+create  app/models/empregado_middle.rb
+
+ route  map.resources :empregados
+
